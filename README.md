@@ -1,5 +1,3 @@
-Here is the professional, emoji-free version of the **README.md** file for your repository.
-
 # Scheme-Easy (Local Octopus Hackathon Version)
 
 A multilingual, voice-first chatbot designed to assist users in identifying government welfare schemes for which they qualify. This version is configured to execute entirely within a local environment using Ollama and local AI models, ensuring data privacy and zero operational costs.
