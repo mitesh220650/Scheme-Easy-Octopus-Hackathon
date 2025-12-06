@@ -1,0 +1,55 @@
+FARMER INCOME SUPPORT SCHEME
+Pradhan Mantri Kisan Samman Nidhi (PM-KISAN) - Ministry of Agriculture
+
+OVERVIEW:
+PM-KISAN is a central sector scheme that provides income support to all landholding farmer families in the country. It aims to supplement their financial needs for procuring agricultural inputs and domestic needs.
+
+ELIGIBILITY CRITERIA:
+- Must be a farmer family with cultivable landholding in their names.
+- Must be an Indian citizen.
+- Must have a valid Aadhaar number.
+- Bank account must be linked with Aadhaar.
+
+WHO CAN APPLY:
+- Small, Marginal, and Large farmers (no landholding limit, earlier limited to 2 hectares).
+- Families comprising husband, wife, and minor children.
+
+EXCLUSIONS (Cannot Apply):
+- Institutional landholders.
+- Present/former holders of constitutional posts, Ministers, MPs, MLAs, Mayors.
+- Serving/retired government employees (except Group D/Multi Tasking Staff).
+- Pensioners with monthly pension of INR 10,000 or more.
+- Income Tax payers in the last assessment year.
+- Professionals like Doctors, Engineers, Lawyers, CAs.
+
+REQUIRED DOCUMENTS:
+1. Aadhaar Card.
+2. Land Ownership Documents (Khasra/Khatauni number).
+3. Bank Account Passbook (Aadhaar-seeded).
+4. Mobile Number.
+5. Citizenship Proof.
+
+BENEFITS:
+- Financial benefit of INR 6,000 per year per family.
+- Payable in three equal installments of INR 2,000 each.
+- Installments released every four months (April-July, August-Nov, Dec-March).
+- Amount transferred directly to bank accounts (DBT).
+
+HOW TO APPLY:
+1. Self-registration online at pmkisan.gov.in under "New Farmer Registration".
+2. Visit nearest Common Service Centre (CSC) for assisted registration.
+3. Contact local Revenue Officials (Patwari) or Nodal Officer.
+4. Use PM-KISAN Mobile App.
+
+APPLICATION PROCESS:
+1. Visit portal and verify Aadhaar number.
+2. Fill in personal and land details (State, District, Village, Khasra No, Area).
+3. Upload supporting land documents and Aadhaar.
+4. Save the application form.
+5. State/UT government verifies the eligibility and land records.
+6. Complete e-KYC (OTP or Biometric) to receive payments.
+
+CONTACT:
+- PM-KISAN Helpline: 155261 / 011-24300606.
+- Email: pmkisan-ict@gov.in.
+- Website: pmkisan.gov.in

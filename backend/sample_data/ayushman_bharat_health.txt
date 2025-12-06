@@ -1,0 +1,51 @@
+AYUSHMAN BHARAT SCHEME
+Pradhan Mantri Jan Arogya Yojana (PM-JAY) - National Health Authority
+
+OVERVIEW:
+Ayushman Bharat PM-JAY is the world's largest health assurance scheme which aims at providing a health cover of INR 5 lakhs per family per year for secondary and tertiary care hospitalization. The scheme covers over 10.74 crore poor and vulnerable families.
+
+ELIGIBILITY CRITERIA:
+- Families identified under Socio-Economic Caste Census (SECC) 2011 data.
+- Rural: Households with kucha walls/roof, no adult member 16-59 years, landless households deriving income from casual labor, destitute, manual scavengers, SC/ST households.
+- Urban: Occupational categories like ragpickers, beggars, domestic workers, street vendors, construction workers.
+- Senior Citizens: All citizens aged 70 years and above irrespective of income status.
+
+WHO CAN APPLY:
+- Members of eligible families as per SECC database.
+- Senior citizens aged 70+ years.
+- Families with no able-bodied adult members.
+- Priority given to girl child, women, and senior citizens.
+
+REQUIRED DOCUMENTS:
+1. Aadhaar Card (mandatory for identity).
+2. Ration Card or Family ID (to establish family relationships).
+3. Mobile Number (linked with Aadhaar).
+4. Caste Certificate (if applying under SC/ST category).
+5. Income Certificate (if applicable for specific state schemes).
+6. PM Letter (if received by the family).
+
+BENEFITS:
+- Health coverage up to INR 5,00,000 per family per year.
+- Cashless and paperless access to services at empanelled hospitals.
+- Covers 3 days of pre-hospitalization and 15 days of post-hospitalization expenses (diagnostics, medicines).
+- No restriction on family size, age, or gender.
+- All pre-existing diseases are covered from day one.
+- Portable benefits across India.
+
+HOW TO APPLY:
+1. Check eligibility online at mera.pmjay.gov.in ("Am I Eligible" portal).
+2. Visit nearest Common Service Centre (CSC) or Empanelled Hospital.
+3. Contact Ayushman Mitra at the hospital help desk.
+4. Senior citizens can apply via the Ayushman App or beneficiary portal.
+
+APPLICATION PROCESS:
+1. Beneficiary visits hospital or CSC with Aadhaar and Ration Card.
+2. Arogya Mitra verifies eligibility in the BIS (Beneficiary Identification System).
+3. e-KYC is performed using Aadhaar authentication.
+4. Documents are scanned and uploaded.
+5. On approval, a Golden Record is generated and the e-Card is issued.
+
+CONTACT:
+- National Toll-Free Helpline: 14555 or 1800-111-565.
+- Website: www.pmjay.gov.in
+- Visit: Nearest District Hospital or Common Service Centre

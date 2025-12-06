@@ -5,6 +5,10 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 import numpy as np
 
+# --- 1. Load Environment Variables ---
+from dotenv import load_dotenv
+load_dotenv()
+
 try:
     import faiss
 except ImportError:
@@ -12,10 +16,12 @@ except ImportError:
 
 from openai import OpenAI
 
+# --- 2. Define Paths ---
 MODELS_DIR = Path(__file__).parent / "models"
 FAISS_INDEX_PATH = MODELS_DIR / "faiss_index.pkl"
 METADATA_PATH = MODELS_DIR / "metadata.json"
 
+# --- 3. System Prompt for the AI ---
 SYSTEM_PROMPT = """You are Scheme-Easy assistant. Task: given a user's situation and a set of retrieved document excerpts describing government welfare schemes, produce:
 
 1) A short direct answer (1-3 lines) stating exactly which schemes the user appears to qualify for. Use confident but cautious language (e.g., "You *may* qualify for...") when uncertain.
@@ -41,10 +47,11 @@ class RAGPipeline:
     
     def _get_client(self) -> OpenAI:
         if self.client is None:
-            api_key = os.environ.get("OPENAI_API_KEY")
-            if not api_key:
-                raise ValueError("OPENAI_API_KEY environment variable is not set")
-            self.client = OpenAI(api_key=api_key)
+            # --- 4. Force Connection to Local Ollama ---
+            api_key = os.environ.get("OPENAI_API_KEY", "ollama")
+            base_url = os.environ.get("OPENAI_BASE_URL", "http://localhost:11434/v1")
+            
+            self.client = OpenAI(api_key=api_key, base_url=base_url)
         return self.client
     
     def load(self) -> bool:
@@ -72,7 +79,8 @@ class RAGPipeline:
     
     def get_query_embedding(self, text: str) -> List[float]:
         client = self._get_client()
-        model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
+        # --- 5. Use Local Embedding Model ---
+        model = os.environ.get("EMBEDDING_MODEL", "nomic-embed-text")
         
         response = client.embeddings.create(
             model=model,
@@ -98,6 +106,7 @@ class RAGPipeline:
                     results.append((self.metadata[idx], float(score)))
             return results
         else:
+            # Fallback if FAISS didn't load properly
             embeddings_array = np.array(self.embeddings, dtype=np.float32)
             
             query_norm = query_array / np.linalg.norm(query_array)
@@ -127,7 +136,8 @@ class RAGPipeline:
     
     def generate_response(self, user_text: str, retrieved_docs: List[Tuple[Dict, float]], language: str = "auto") -> Dict[str, Any]:
         client = self._get_client()
-        model = os.environ.get("LLM_MODEL", "gpt-4o-mini")
+        # --- 6. Use Local LLM Model ---
+        model = os.environ.get("LLM_MODEL", "llama3.2")
         
         user_prompt = self.build_user_prompt(user_text, retrieved_docs)
         
@@ -149,6 +159,7 @@ class RAGPipeline:
             
             content = response.choices[0].message.content.strip()
             
+            # Basic cleanup if the model outputs markdown code blocks
             if content.startswith("```"):
                 content = content.split("```")[1]
                 if content.startswith("json"):
@@ -157,9 +168,10 @@ class RAGPipeline:
             
             result = json.loads(content)
             
+            # Optional usage tracking (Ollama might return 0s)
             result["llm_tokens"] = {
-                "prompt_tokens": response.usage.prompt_tokens,
-                "completion_tokens": response.usage.completion_tokens
+                "prompt_tokens": getattr(response.usage, "prompt_tokens", 0),
+                "completion_tokens": getattr(response.usage, "completion_tokens", 0)
             }
             
             return result
@@ -170,7 +182,7 @@ class RAGPipeline:
                 "schemes": [],
                 "follow_up_questions": ["Could you describe your situation in more detail?"],
                 "error": "JSON parsing failed",
-                "raw_response": content if 'content' in dir() else None
+                "raw_response": content if 'content' in locals() else None
             }
         except Exception as e:
             return {
@@ -229,6 +241,7 @@ class RAGPipeline:
         return list(schemes.values())
 
 
+# --- 7. Global Instance and Functions ---
 rag_pipeline = RAGPipeline()
 
 

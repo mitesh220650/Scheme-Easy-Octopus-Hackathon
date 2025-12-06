@@ -1,3 +1,7 @@
+# --- 1. Load Environment Variables First ---
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 from pathlib import Path
 from typing import Optional
@@ -9,9 +13,19 @@ from pydantic import BaseModel
 
 from openai import OpenAI
 
+# --- 2. Import Whisper for Local Transcription ---
+import whisper
+
 from ingest import run_ingestion, is_index_available
 from rag import query as rag_query, get_metadata, is_loaded as is_rag_loaded
 from audio_utils import save_audio_file, cleanup_audio_file, validate_audio_file
+
+# --- 3. Load Local Whisper Model (Global Variable) ---
+# "base" is a good balance of speed and accuracy. 
+# Options: tiny, base, small, medium, large
+print("Loading local Whisper model...")
+whisper_model = whisper.load_model("medium")
+print("Whisper model loaded.")
 
 
 class QueryRequest(BaseModel):
@@ -65,10 +79,10 @@ app.add_middleware(
 
 
 def get_openai_client() -> OpenAI:
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
-    return OpenAI(api_key=api_key)
+    # Use local Ollama settings
+    api_key = os.environ.get("OPENAI_API_KEY", "ollama")
+    base_url = os.environ.get("OPENAI_BASE_URL", "http://localhost:11434/v1")
+    return OpenAI(api_key=api_key, base_url=base_url)
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -96,46 +110,48 @@ async def ingest_documents():
 
 @app.post("/transcribe", response_model=TranscriptionResponse)
 async def transcribe_audio(audio: UploadFile = File(...)):
+    # 1. Read the audio file
     audio_data = await audio.read()
     
+    # 2. Validate file (size, format, etc.)
     is_valid, message = validate_audio_file(audio_data, audio.filename or "audio.webm")
     if not is_valid:
         raise HTTPException(status_code=400, detail=message)
     
-    use_whisper_api = os.environ.get("WHISPER_API", "true").lower() == "true"
+    # 3. Save temporarily for Whisper to process
+    # We use a temporary file because Whisper requires a file path
+    temp_filename = f"temp_{audio.filename}"
     
-    if use_whisper_api:
-        try:
-            client = get_openai_client()
-            
-            audio_path = save_audio_file(audio_data, audio.filename or "audio.webm")
-            
-            try:
-                with open(audio_path, "rb") as audio_file:
-                    response = client.audio.transcriptions.create(
-                        model="whisper-1",
-                        file=audio_file,
-                        response_format="verbose_json"
-                    )
-                
-                return TranscriptionResponse(
-                    transcript=response.text,
-                    language=getattr(response, 'language', 'auto-detected')
-                )
-            finally:
-                cleanup_audio_file(audio_path)
-                
-        except Exception as e:
-            print(f"Whisper API error: {e}")
-            return TranscriptionResponse(
-                transcript="[Demo mode] I am a farmer and my crops were damaged by heavy rain. I need help.",
-                language="en"
-            )
-    else:
+    try:
+        with open(temp_filename, "wb") as f:
+            f.write(audio_data)
+        
+        # 4. Transcribe using local Whisper model
+        # This runs on CPU (or GPU if available/configured)
+        result = whisper_model.transcribe(temp_filename)
+        text = result["text"].strip()
+        
+        # Whisper auto-detects language, but the 'result' object has more details
+        # For simplicity, we default to 'en' or rely on what's detected
+        # You can access result['language'] if needed
+        detected_lang = result.get('language', 'en')
+
         return TranscriptionResponse(
-            transcript="[Demo mode - Whisper disabled] Sample transcription for testing.",
+            transcript=text,
+            language=detected_lang
+        )
+
+    except Exception as e:
+        print(f"Transcription error: {e}")
+        return TranscriptionResponse(
+            transcript="Error: Could not transcribe audio.",
             language="en"
         )
+        
+    finally:
+        # 5. Clean up temp file
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
 
 
 @app.post("/query")
@@ -168,6 +184,7 @@ async def ask_with_audio(
     top_k: int = Form(default=5),
     language: str = Form(default="auto")
 ):
+    # This now calls our updated local transcribe function
     transcription = await transcribe_audio(audio)
     
     if not is_rag_loaded():
@@ -204,5 +221,6 @@ async def get_schemes_metadata():
 
 if __name__ == "__main__":
     import uvicorn
+    # Use 127.0.0.1 for local, keep 8000
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="127.0.0.1", port=port)

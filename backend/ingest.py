@@ -13,6 +13,9 @@ except ImportError:
 
 from openai import OpenAI
 
+from dotenv import load_dotenv
+load_dotenv()  # Loads variables from .env
+
 SAMPLE_DATA_DIR = Path(__file__).parent / "sample_data"
 MODELS_DIR = Path(__file__).parent / "models"
 FAISS_INDEX_PATH = MODELS_DIR / "faiss_index.pkl"
@@ -22,11 +25,13 @@ CHUNK_SIZE = 800
 CHUNK_OVERLAP = 120
 
 
+
+
 def get_openai_client() -> OpenAI:
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        raise ValueError("OPENAI_API_KEY environment variable is not set")
-    return OpenAI(api_key=api_key)
+    # Use local Ollama settings
+    api_key = os.environ.get("OPENAI_API_KEY", "ollama")
+    base_url = os.environ.get("OPENAI_BASE_URL", "http://localhost:11434/v1")
+    return OpenAI(api_key=api_key, base_url=base_url)
 
 
 def extract_text_from_file(file_path: Path) -> str:
@@ -124,7 +129,7 @@ def extract_scheme_title(text: str, filename: str) -> str:
 
 
 def get_embeddings(texts: List[str], client: OpenAI) -> List[List[float]]:
-    model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
+    model = os.environ.get("EMBEDDING_MODEL", "nomic-embed-text")
     
     embeddings = []
     batch_size = 100
